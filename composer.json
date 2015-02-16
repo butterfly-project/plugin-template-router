@@ -1,0 +1,24 @@
+{
+    "name": "butterfly/plugin-template-router",
+    "type": "library",
+    "description": "Butterfly PHP. Template Router Plugin",
+    "keywords": ["plugin", "router", "template"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Marat Fakhertdinov",
+            "email": "marat.fakhertdinov@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+
+        "butterfly/app-request-response": "1.1.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Butterfly\\Plugin\\TemplateRouter\\": "src/",
+            "Butterfly\\Plugin\\TemplateRouter\\Tests\\": "tests/unit/"
+        }
+    }
+}

@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+1.0.1
+-----
+
+Added functionality:
+
+ * Updated router logic
+
 1.0.0
 -----
 

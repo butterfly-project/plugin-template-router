@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+1.0.2
+-----
+
+Changes:
+
+ * Fix bug for template controller
+
 1.0.1
 -----
 

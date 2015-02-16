@@ -13,7 +13,8 @@
     "require": {
         "php": ">=5.3.3",
 
-        "butterfly/app-request-response": "1.1.*"
+        "butterfly/app-request-response": "1.1.*",
+        "butterfly/adapter-twig": "1.1.*"
     },
     "autoload": {
         "psr-4": {

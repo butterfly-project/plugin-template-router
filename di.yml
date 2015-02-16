@@ -16,5 +16,5 @@ services:
     tags: 'bfy_app.routing'
 
   bfy_plugin.template_router.controller:
-    class: 'Butterfly\Plugin\TemplateRouter\Controller'
+    class: 'Butterfly\Plugin\TemplateRouter\TemplateController'
     arguments: ['@Butterfly\Adapter\Twig\IRenderer', '@service_container']

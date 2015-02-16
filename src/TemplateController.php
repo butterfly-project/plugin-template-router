@@ -5,6 +5,7 @@ namespace Butterfly\Plugin\TemplateRouter;
 use Butterfly\Adapter\Twig\IRenderer;
 use Butterfly\Component\DI\Container;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @author Marat Fakhertdinov <marat.fakhertdinov@gmail.com>
@@ -45,6 +46,8 @@ class TemplateController
             'request'   => $request,
         );
 
-        return $this->render->render($template, $parameters);
+        $content = $this->render->render($template, $parameters);
+
+        return new Response($content);
     }
 }

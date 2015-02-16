@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * @author Marat Fakhertdinov <marat.fakhertdinov@gmail.com>
  */
-class TemplaetController
+class TemplateController
 {
     /**
      * @var IRenderer

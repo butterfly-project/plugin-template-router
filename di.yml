@@ -1,0 +1,14 @@
+bfy_plugin.auth.id_parameter_name: 'user_id'
+
+services:
+
+  bfy_plugin.auth.identification:
+    class: 'Butterfly\Plugin\Auth\IdentificationService'
+    arguments: [@bfy_adapter.http_foundation.session, %bfy_plugin.auth.id_parameter_name%]
+
+  bfy_plugin.auth.authorization_router:
+    class: 'Butterfly\Plugin\Auth\AuthorizationRouter'
+    arguments: [@bfy_adapter.sf2_routing.router, @bfy_plugin.auth.identification, @bfy_adapter.event_dispatcher]
+
+interfaces:
+  'Butterfly\Application\RequestResponse\Routing\IRouterAware': 'bfy_plugin.auth.authorization_router'

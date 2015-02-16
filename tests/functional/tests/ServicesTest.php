@@ -4,25 +4,14 @@ namespace Butterfly\Tests;
 
 class ServicesTest extends BaseDiTest
 {
-    protected static function getAdditionalConfigPaths()
-    {
-        return array(
-            self::$baseDir . '/config/test.yml',
-        );
-    }
-
     public function getDataForTestParameter()
     {
         return array(
-            array('bfy_plugin.auth.id_parameter_name', 'user_id'),
-        );
-    }
-
-    public function getDataForTestService()
-    {
-        return array(
-            array('bfy_plugin.auth.identification'),
-            array('bfy_plugin.auth.authorization_router'),
+            array('bfy_plugin.template_router.templates_dirs', array()),
+            array('bfy_plugin.template_router.handler_action_code', 'bfy_plugin.template_router.controller:index'),
+            array('bfy_plugin.template_router.file_extension', '.html.twig'),
+            array('bfy_plugin.template_router.home_path', '/'),
+            array('bfy_plugin.template_router.data_source', array()),
         );
     }
 
@@ -34,6 +23,14 @@ class ServicesTest extends BaseDiTest
     public function testParameter($parameterName, $expectedValue)
     {
         $this->assertEquals($expectedValue, self::$container->getParameter($parameterName));
+    }
+
+    public function getDataForTestService()
+    {
+        return array(
+            array('bfy_plugin.template_router.router'),
+            array('bfy_plugin.template_router.controller'),
+        );
     }
 
     /**

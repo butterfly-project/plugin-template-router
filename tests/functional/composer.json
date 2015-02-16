@@ -2,14 +2,14 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "git@github.com:butterfly-project/plugin-auth.git"
+            "url": "git@github.com:butterfly-project/plugin-template-router.git"
         }
     ],
     "require": {
         "php": ">=5.3.3",
         "butterfly/packages": "1.2.*",
 
-        "butterfly/plugin-auth": "dev-dev"
+        "butterfly/plugin-template-router": "dev-dev"
     },
     "autoload": {
         "psr-4": {

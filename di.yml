@@ -1,14 +1,20 @@
-bfy_plugin.auth.id_parameter_name: 'user_id'
+bfy_plugin.template_router.templates_dirs:       []
+bfy_plugin.template_router.handler_action_code:  'bfy_plugin.template_router.controller:index'
+bfy_plugin.template_router.file_extension:       '.html.twig'
+bfy_plugin.template_router.home_path:            '/'
+bfy_plugin.template_router.data_source:          []
 
 services:
 
-  bfy_plugin.auth.identification:
-    class: 'Butterfly\Plugin\Auth\IdentificationService'
-    arguments: [@bfy_adapter.http_foundation.session, %bfy_plugin.auth.id_parameter_name%]
+  bfy_plugin.template_router.router:
+    class: 'Butterfly\Plugin\TemplateRouter\Router'
+    arguments:
+      - %bfy_plugin.template_router.templates_dirs%
+      - %bfy_plugin.template_router.handler_action_code%
+      - %bfy_plugin.template_router.file_extension%
+      - %bfy_plugin.template_router.home_path%
+    tags: 'bfy_app.routing'
 
-  bfy_plugin.auth.authorization_router:
-    class: 'Butterfly\Plugin\Auth\AuthorizationRouter'
-    arguments: [@bfy_adapter.sf2_routing.router, @bfy_plugin.auth.identification, @bfy_adapter.event_dispatcher]
-
-interfaces:
-  'Butterfly\Application\RequestResponse\Routing\IRouterAware': 'bfy_plugin.auth.authorization_router'
+  bfy_plugin.template_router.controller:
+    class: 'Butterfly\Plugin\TemplateRouter\TemplateController'
+    arguments: ['@Butterfly\Adapter\Twig\IRenderer', '@service_container']

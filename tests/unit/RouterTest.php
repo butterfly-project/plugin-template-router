@@ -10,21 +10,81 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class RouterTest extends \PHPUnit_Framework_TestCase
 {
-    public function testGetActionCode()
+    public function getDataForTestGetActionCode()
     {
-        $routing  = $this->getRouting();
-        $request  = Request::create('/index');
+        $routing1 = array(
+            array(
+                'dir'             => __DIR__ . '/stub/view/example1',
+                'prefix_uri'      => '',
+                'prefix_template' => '',
+            ),
+        );
+
+        $routing2 = array(
+            array(
+                'dir'             => __DIR__ . '/stub/view/example2',
+                'prefix_uri'      => 'auto',
+                'prefix_template' => '',
+            ),
+        );
+
+        $routing3 = array(
+            array(
+                'dir'             => __DIR__ . '/stub/view/example3',
+                'prefix_uri'      => '',
+                'prefix_template' => 'auto',
+            ),
+        );
+
+        return array(
+            array($routing1, '/',               'index.html.twig'),
+            array($routing1, '/index',          'index.html.twig'),
+            array($routing1, '/index/',         'index.html.twig'),
+            array($routing1, '/users/index',    'users/index.html.twig'),
+            array($routing1, '/users/index/',   'users/index.html.twig'),
+
+            array($routing2, '/auto/',              'index.html.twig'),
+            array($routing2, '/auto/index',         'index.html.twig'),
+            array($routing2, '/auto/index/',        'index.html.twig'),
+            array($routing2, '/auto/users/index',   'users/index.html.twig'),
+            array($routing2, '/auto/users/index/',  'users/index.html.twig'),
+
+            array($routing3, '/',               'auto/index.html.twig'),
+            array($routing3, '/index',          'auto/index.html.twig'),
+            array($routing3, '/index/',         'auto/index.html.twig'),
+            array($routing3, '/users/index',    'auto/users/index.html.twig'),
+            array($routing3, '/users/index/',   'auto/users/index.html.twig'),
+        );
+    }
+
+    /**
+     * @dataProvider getDataForTestGetActionCode
+     *
+     * @param array $templateDirs
+     * @param string $uri
+     * @param string $expectedTemplate
+     */
+    public function testGetActionCode(array $templateDirs, $uri, $expectedTemplate)
+    {
+        $routing = $this->getRouting($templateDirs);
+        $request  = Request::create($uri);
 
         $action   = $routing->getAction($request);
         $template = $request->attributes->get('template');
 
         $this->assertEquals(array('bfy.controller:index', array($request)), $action);
-        $this->assertEquals('auto/index.html.twig', $template);
+        $this->assertEquals($expectedTemplate, $template);
     }
 
     public function testGetActionCodeIfUndefinedRoute()
     {
-        $routing = $this->getRouting();
+        $templateDirs = array(
+            array(
+                'dir' => __DIR__ . '/stub/view/auto'
+            ),
+        );
+
+        $routing = $this->getRouting($templateDirs);
         $request = Request::create('/undefined');
 
         $actionCode = $routing->getAction($request);
@@ -32,28 +92,12 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($actionCode);
     }
 
-    public function testGetActionCodeIfHomePage()
-    {
-        $routing = $this->getRouting();
-        $request = Request::create('/');
-
-        $actionCode = $routing->getAction($request);
-        $template   = $request->attributes->get('template');
-
-        $this->assertEquals(array('bfy.controller:index', array($request)), $actionCode);
-        $this->assertEquals('auto/index.html.twig', $template);
-    }
-
     /**
+     * @param array $templateDirs
      * @return Router
      */
-    protected function getRouting()
+    protected function getRouting(array $templateDirs)
     {
-        $viewDir      = realpath(__DIR__ . '/stub/view');
-        $templateDirs = array(
-            'auto' => $viewDir . '/auto',
-        );
-
         $handlerActionCode = 'bfy.controller:index';
         $fileExtension     = '.html.twig';
         $homePage          = '/index';

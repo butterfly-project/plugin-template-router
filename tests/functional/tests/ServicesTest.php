@@ -10,7 +10,7 @@ class ServicesTest extends BaseDiTest
             array('bfy_plugin.template_router.templates_dirs', array()),
             array('bfy_plugin.template_router.handler_action_code', 'bfy_plugin.template_router.controller:index'),
             array('bfy_plugin.template_router.file_extension', '.html.twig'),
-            array('bfy_plugin.template_router.home_path', '/'),
+            array('bfy_plugin.template_router.default_uri', '/'),
             array('bfy_plugin.template_router.data_source', array()),
         );
     }

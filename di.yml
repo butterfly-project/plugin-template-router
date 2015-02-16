@@ -1,7 +1,7 @@
 bfy_plugin.template_router.templates_dirs:       []
 bfy_plugin.template_router.handler_action_code:  'bfy_plugin.template_router.controller:index'
 bfy_plugin.template_router.file_extension:       '.html.twig'
-bfy_plugin.template_router.home_path:            '/'
+bfy_plugin.template_router.default_uri:          '/'
 bfy_plugin.template_router.data_source:          []
 
 services:
@@ -12,7 +12,7 @@ services:
       - %bfy_plugin.template_router.templates_dirs%
       - %bfy_plugin.template_router.handler_action_code%
       - %bfy_plugin.template_router.file_extension%
-      - %bfy_plugin.template_router.home_path%
+      - %bfy_plugin.template_router.default_uri%
     tags: 'bfy_app.routing'
 
   bfy_plugin.template_router.controller:

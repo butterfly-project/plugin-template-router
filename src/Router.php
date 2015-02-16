@@ -10,12 +10,12 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class Router implements IRouter
 {
-    const HOME_URI = '/';
+    const EMPTY_URI = '/';
 
     /**
      * @var array
      */
-    protected $templateDirs;
+    protected $routes;
 
     /**
      * @var string
@@ -30,20 +30,20 @@ class Router implements IRouter
     /**
      * @var string
      */
-    protected $homePath;
+    protected $defaultUri;
 
     /**
-     * @param array $templateDirs
+     * @param array $routes
      * @param string $handlerActionCode
      * @param string $fileExtension
-     * @param string $homePath
+     * @param string $defaultUri
      */
-    public function __construct(array $templateDirs, $handlerActionCode, $fileExtension, $homePath)
+    public function __construct(array $routes, $handlerActionCode, $fileExtension, $defaultUri)
     {
-        $this->templateDirs      = $templateDirs;
+        $this->routes            = $routes;
         $this->handlerActionCode = $handlerActionCode;
         $this->fileExtension     = $fileExtension;
-        $this->homePath          = $homePath;
+        $this->defaultUri        = $defaultUri;
     }
 
     /**
@@ -52,9 +52,8 @@ class Router implements IRouter
      */
     public function getAction(Request $request)
     {
-        $pathInfo = $request->getPathInfo();
-
-        $template = $this->getTemplatePath($pathInfo);
+        $uri      = $request->getPathInfo();
+        $template = $this->getTemplateUri($uri);
 
         if (null === $template) {
             return null;
@@ -66,23 +65,84 @@ class Router implements IRouter
     }
 
     /**
-     * @param string $path
+     * @param string $uri
      * @return string|null
      */
-    protected function getTemplatePath($path)
+    protected function getTemplateUri($uri)
     {
-        if (self::HOME_URI == $path) {
-            $path = $this->homePath;
-        }
+        foreach ($this->routes as $route) {
+            $prefixUri      = isset($route['prefix_uri']) ? $route['prefix_uri'] : '';
+            $prefixTemplate = isset($route['prefix_template']) ? $route['prefix_template'] : '';
+            $dir            = $route['dir'] . DIRECTORY_SEPARATOR . $prefixTemplate;
 
-        foreach ($this->templateDirs as $templateDir => $absoluteDir) {
-            $filePath = $absoluteDir . $path . $this->fileExtension;
-
-            if (is_readable($filePath)) {
-                return $templateDir . $path . $this->fileExtension;
+            $uri = $this->prepareUri($uri, $prefixUri);
+            if (null === $uri) {
+                continue;
             }
+
+            if (!$this->checkFile($uri, $dir)) {
+                continue;
+            }
+
+            return $this->getTemplateName($uri, $prefixTemplate);
         }
 
         return null;
+    }
+
+    /**
+     * @param string $uri
+     * @param string $prefix
+     * @return string|null
+     */
+    protected function prepareUri($uri, $prefix)
+    {
+        if (!empty($prefix)) {
+            $prefix = '/' . $prefix;
+
+            if (0 === strpos($uri, $prefix)) {
+                $uri = substr($uri, mb_strlen($prefix));
+            }
+        }
+
+        $uriLength = mb_strlen($uri);
+
+        if (1 < $uriLength && '/' == $uri[$uriLength-1]) {
+            $uri = substr($uri, 0, -1);
+        }
+
+        if (self::EMPTY_URI == $uri) {
+            $uri = $this->defaultUri;
+        }
+
+        return $uri;
+    }
+
+    /**
+     * @param string $uri
+     * @param string $dir
+     * @return bool
+     */
+    protected function checkFile($uri, $dir)
+    {
+        $filePath = $dir . $uri . $this->fileExtension;
+
+        return is_readable($filePath);
+    }
+
+    /**
+     * @param string $uri
+     * @param string $prefix
+     * @return string
+     */
+    protected function getTemplateName($uri, $prefix)
+    {
+        $name = substr($uri . $this->fileExtension, 1);
+
+        if (!empty($prefix)) {
+            $name = $prefix . '/' . $name;
+        }
+
+        return $name;
     }
 }

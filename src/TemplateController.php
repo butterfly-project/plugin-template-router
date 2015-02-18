@@ -15,7 +15,12 @@ class TemplateController
     /**
      * @var IRenderer
      */
-    protected $render;
+    protected $renderer;
+
+    /**
+     * @var array
+     */
+    protected $data;
 
     /**
      * @var Container
@@ -23,30 +28,67 @@ class TemplateController
     protected $container;
 
     /**
-     * @param IRenderer $render
-     * @param Container $container
+     * @var string|null
      */
-    public function __construct(IRenderer $render, Container $container)
+    protected $templateOf404;
+
+    /**
+     * @param IRenderer $renderer
+     * @param array $data
+     * @param Container $container
+     * @param string $templateOf404
+     */
+    public function __construct(IRenderer $renderer, array $data, Container $container, $templateOf404 = null)
     {
-        $this->container = $container;
-        $this->render    = $render;
+        $this->renderer      = $renderer;
+        $this->data          = $data;
+        $this->container     = $container;
+        $this->templateOf404 = $templateOf404;
     }
 
     /**
      * @param Request $request
-     * @return string
+     * @return Response
      */
     public function indexAction(Request $request)
     {
         $template = $request->attributes->get('template');
 
         $parameters = array(
-            'container' => $this->container,
-            'data'      => $this->container->getParameter('bfy_plugin.template_router.data_source'),
-            'request'   => $request,
+            'data_source' => $this->data,
+            'container'   => $this->container,
+            'request'     => $request,
         );
 
-        $content = $this->render->render($template, $parameters);
+        return $this->render($template, $parameters);
+    }
+
+    /**
+     * @return Response
+     */
+    public function page404Action(Request $request)
+    {
+        if (empty($this->templateOf404)) {
+            return new Response('404 - Page not found');
+        }
+
+        $parameters = array(
+            'data_source' => $this->data,
+            'container'   => $this->container,
+            'request'     => $request,
+        );
+
+        return $this->render($this->templateOf404, $parameters);
+    }
+
+    /**
+     * @param string $template
+     * @param array $parameters
+     * @return Response
+     */
+    protected function render($template, array $parameters)
+    {
+        $content = $this->renderer->render($template, $parameters);
 
         return new Response($content);
     }

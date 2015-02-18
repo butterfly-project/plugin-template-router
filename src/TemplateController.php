@@ -55,9 +55,9 @@ class TemplateController
         $template = $request->attributes->get('template');
 
         $parameters = array(
-            'data_source' => $this->data,
-            'container'   => $this->container,
-            'request'     => $request,
+            'data'      => $this->data,
+            'container' => $this->container,
+            'request'   => $request,
         );
 
         return $this->render($template, $parameters);

@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+1.1.0
+-----
+
+Changes:
+
+ * Added action of 404 to template controller
+
 1.0.2
 -----
 

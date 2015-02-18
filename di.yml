@@ -2,7 +2,10 @@ bfy_plugin.template_router.templates_dirs:       []
 bfy_plugin.template_router.handler_action_code:  'bfy_plugin.template_router.controller:index'
 bfy_plugin.template_router.file_extension:       '.html.twig'
 bfy_plugin.template_router.default_uri:          '/'
-bfy_plugin.template_router.data_source:          []
+bfy_plugin.template_router.data:
+  container: @container
+
+bfy_plugin.template_router.template_of_404:      ''
 
 services:
 
@@ -17,4 +20,7 @@ services:
 
   bfy_plugin.template_router.controller:
     class: 'Butterfly\Plugin\TemplateRouter\TemplateController'
-    arguments: ['@Butterfly\Adapter\Twig\IRenderer', '@service_container']
+    arguments:
+      - '@Butterfly\Adapter\Twig\IRenderer'
+      - '%bfy_plugin.template_router.data%'
+      - '%bfy_plugin.template_router.template_of_404%'

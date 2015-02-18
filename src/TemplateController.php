@@ -73,9 +73,9 @@ class TemplateController
         }
 
         $parameters = array(
-            'data_source' => $this->data,
-            'container'   => $this->container,
-            'request'     => $request,
+            'data'      => $this->data,
+            'container' => $this->container,
+            'request'   => $request,
         );
 
         return $this->render($this->templateOf404, $parameters);

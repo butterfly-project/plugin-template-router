@@ -3,6 +3,7 @@
 namespace Butterfly\Plugin\TemplateRouter;
 
 use Butterfly\Adapter\Twig\IRenderer;
+use Butterfly\Component\DI\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -22,6 +23,11 @@ class TemplateController
     protected $data;
 
     /**
+     * @var Container
+     */
+    protected $container;
+
+    /**
      * @var string|null
      */
     protected $templateOf404;
@@ -29,12 +35,14 @@ class TemplateController
     /**
      * @param IRenderer $renderer
      * @param array $data
+     * @param Container $container
      * @param string $templateOf404
      */
-    public function __construct(IRenderer $renderer, array $data, $templateOf404 = null)
+    public function __construct(IRenderer $renderer, array $data, Container $container, $templateOf404 = null)
     {
         $this->renderer      = $renderer;
         $this->data          = $data;
+        $this->container     = $container;
         $this->templateOf404 = $templateOf404;
     }
 
@@ -46,19 +54,31 @@ class TemplateController
     {
         $template = $request->attributes->get('template');
 
-        return $this->render($template, $this->data);
+        $parameters = array(
+            'data_source' => $this->data,
+            'container'   => $this->container,
+            'request'     => $request,
+        );
+
+        return $this->render($template, $parameters);
     }
 
     /**
      * @return Response
      */
-    public function page404Action()
+    public function page404Action(Request $request)
     {
         if (empty($this->templateOf404)) {
             return new Response('404 - Page not found');
         }
 
-        return $this->render($this->templateOf404, $this->data);
+        $parameters = array(
+            'data_source' => $this->data,
+            'container'   => $this->container,
+            'request'     => $request,
+        );
+
+        return $this->render($this->templateOf404, $parameters);
     }
 
     /**

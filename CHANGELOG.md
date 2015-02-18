@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+1.1.1
+-----
+
+Changes:
+
+ * Changes parameters in template
+
 1.1.0
 -----
 
